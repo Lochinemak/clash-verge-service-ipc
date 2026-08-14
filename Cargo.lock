@@ -121,7 +121,7 @@ dependencies = [
 [[package]]
 name = "clash_verge_logger"
 version = "0.2.2"
-source = "git+https://github.com/clash-verge-rev/clash-verge-logger.git#45adad7ae6dd76baa7457e3b111a0f1927998e22"
+source = "git+https://github.com/Lochinemak/clash-verge-logger.git?branch=loch%2Fdev#45adad7ae6dd76baa7457e3b111a0f1927998e22"
 dependencies = [
  "arraydeque",
  "compact_str",
@@ -634,7 +634,7 @@ dependencies = [
 [[package]]
 name = "kode-bridge"
 version = "0.4.2"
-source = "git+https://github.com/clash-verge-rev/kode-bridge.git?branch=dev#9dc3ee4689e46252600b9c1b12d20961fce113b4"
+source = "git+https://github.com/Lochinemak/kode-bridge.git?branch=loch%2Fdev#9dc3ee4689e46252600b9c1b12d20961fce113b4"
 dependencies = [
  "bytes",
  "futures",
@@ -1231,14 +1231,15 @@ dependencies = [
 
 [[package]]
 name = "sysproxy"
-version = "0.5.4"
-source = "git+https://github.com/clash-verge-rev/sysproxy-rs?branch=main#d214eba9f61d655d49a35f6ae17c359f7ad68d79"
+version = "0.6.0"
+source = "git+https://github.com/Lochinemak/sysproxy-rs?branch=loch%2Fdev#16500c3e91a4fa8d541108fb603c5ee4258004a6"
 dependencies = [
  "iptools",
  "log",
  "system-configuration",
  "thiserror",
  "url",
+ "which",
  "windows",
  "winreg",
  "xdg",
@@ -1613,6 +1614,15 @@ dependencies = [
  "hashbrown 0.15.5",
  "indexmap",
  "semver",
+]
+
+[[package]]
+name = "which"
+version = "8.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8f3ef584124b911bcc3875c2f1472e80f24361ceb789bd1c62b3e9a3df9ff43c"
+dependencies = [
+ "libc",
 ]
 
 [[package]]
