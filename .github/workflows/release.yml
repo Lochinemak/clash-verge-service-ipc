@@ -182,7 +182,7 @@ jobs:
               --keychain github-actions.keychain \
               --options runtime \
               --timestamp \
-              --identifier "io.github.clash-verge-rev.clash-verge-rev-service-ipc" \
+              --identifier "io.github.loch.clash-verge-next-service-ipc" \
               "target/${{ matrix.target }}/release/$bin"
             codesign -dvv "target/${{ matrix.target }}/release/$bin"
             codesign -d --entitlements /dev/stdout "target/${{ matrix.target }}/release/$bin"

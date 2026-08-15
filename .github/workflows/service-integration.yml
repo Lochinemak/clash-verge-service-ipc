@@ -122,7 +122,7 @@ jobs:
 
       - name: Verify service (macOS)
         if: runner.os == 'macOS'
-        run: sudo launchctl list | grep io.github.clash-verge-rev.clash-verge-rev.service
+        run: sudo launchctl list | grep io.github.loch.clash-verge-next.service
 
       - name: Start mock_binary (macOS)
         id: start_macos

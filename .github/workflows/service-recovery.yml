@@ -115,7 +115,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          service_id="io.github.clash-verge-rev.clash-verge-rev.service"
+          service_id="io.github.loch.clash-verge-next.service"
 
           diagnose() {
             echo "::group::launchctl print"

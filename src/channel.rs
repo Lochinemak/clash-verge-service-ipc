@@ -14,8 +14,8 @@ pub const CHANNEL_IDENTITY: ChannelIdentity = ChannelIdentity {
     service_slug: "clash-verge-service",
     windows_service_name: "clash_verge_service",
     service_display_name: "Clash Verge Service",
-    macos_app_bundle_id: "io.github.clash-verge-rev.clash-verge-rev",
-    macos_service_id: "io.github.clash-verge-rev.clash-verge-rev.service",
+    macos_app_bundle_id: "io.github.loch.clash-verge-next",
+    macos_service_id: "io.github.loch.clash-verge-next.service",
 };
 
 #[cfg(feature = "development-channel")]
@@ -24,8 +24,8 @@ pub const CHANNEL_IDENTITY: ChannelIdentity = ChannelIdentity {
     service_slug: "clash-verge-service-dev",
     windows_service_name: "clash_verge_service_dev",
     service_display_name: "Clash Verge Development Service",
-    macos_app_bundle_id: "io.github.clash-verge-rev.clash-verge-rev.dev",
-    macos_service_id: "io.github.clash-verge-rev.clash-verge-rev.dev.service",
+    macos_app_bundle_id: "io.github.loch.clash-verge-next.dev",
+    macos_service_id: "io.github.loch.clash-verge-next.dev.service",
 };
 
 pub const SERVICE_SLUG: &str = CHANNEL_IDENTITY.service_slug;

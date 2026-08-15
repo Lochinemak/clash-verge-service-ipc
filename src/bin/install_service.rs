@@ -545,7 +545,7 @@ mod tests {
     fn missing_launchd_service_skips_bootout() {
         let plan = classify_launchd_service_probe(
             Some(113),
-            "Could not find service \"io.github.clash-verge-rev.clash-verge-rev.service\" in domain for system",
+            "Could not find service \"io.github.loch.clash-verge-next.service\" in domain for system",
         )
         .unwrap();
 
