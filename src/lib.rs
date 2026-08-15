@@ -5,6 +5,7 @@ mod core;
 mod client;
 
 pub use channel::{
+    BUNDLED_INSTALLER_BINARY_NAME, BUNDLED_SERVICE_BINARY_NAME, BUNDLED_UNINSTALLER_BINARY_NAME,
     CHANNEL_IDENTITY, ChannelIdentity, MACOS_APP_BUNDLE_ID, MACOS_SERVICE_ID, SERVICE_DISPLAY_NAME,
     SERVICE_SLUG, WINDOWS_SERVICE_NAME,
 };
@@ -45,36 +46,36 @@ pub use client::*;
     not(feature = "test"),
     not(feature = "development-channel")
 ))]
-pub static IPC_PATH: &str = "/var/run/clash-verge-service/service.sock";
+pub static IPC_PATH: &str = "/var/run/clash-verge-next-service/service.sock";
 #[cfg(all(
     target_os = "macos",
     not(feature = "test"),
     feature = "development-channel"
 ))]
-pub static IPC_PATH: &str = "/var/run/clash-verge-service-dev/service.sock";
+pub static IPC_PATH: &str = "/var/run/clash-verge-next-service-dev/service.sock";
 #[cfg(all(
     unix,
     not(target_os = "macos"),
     not(feature = "test"),
     not(feature = "development-channel")
 ))]
-pub static IPC_PATH: &str = "/run/clash-verge-service/service.sock";
+pub static IPC_PATH: &str = "/run/clash-verge-next-service/service.sock";
 #[cfg(all(
     unix,
     not(target_os = "macos"),
     not(feature = "test"),
     feature = "development-channel"
 ))]
-pub static IPC_PATH: &str = "/run/clash-verge-service-dev/service.sock";
+pub static IPC_PATH: &str = "/run/clash-verge-next-service-dev/service.sock";
 #[cfg(all(windows, not(feature = "test"), not(feature = "development-channel")))]
-pub static IPC_PATH: &str = r"\\.\pipe\clash-verge-service";
+pub static IPC_PATH: &str = r"\\.\pipe\clash-verge-next-service";
 #[cfg(all(windows, not(feature = "test"), feature = "development-channel"))]
-pub static IPC_PATH: &str = r"\\.\pipe\clash-verge-service-dev";
+pub static IPC_PATH: &str = r"\\.\pipe\clash-verge-next-service-dev";
 
 #[cfg(all(feature = "test", unix))]
-pub static IPC_PATH: &str = "/tmp/clash-verge-service-ipc-test/service.sock";
+pub static IPC_PATH: &str = "/tmp/clash-verge-next-service-ipc-test/service.sock";
 #[cfg(all(feature = "test", windows))]
-pub static IPC_PATH: &str = r"\\.\pipe\clash-verge-service-test";
+pub static IPC_PATH: &str = r"\\.\pipe\clash-verge-next-service-test";
 
 #[cfg(any(feature = "standalone", feature = "client"))]
 pub static IPC_AUTH_EXPECT: &str = r#"A thing of beauty is a joy for ever. Its loveliness increases; it will never pass into nothingness."#;

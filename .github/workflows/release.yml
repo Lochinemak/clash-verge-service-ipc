@@ -59,7 +59,7 @@ jobs:
 
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "asset_prefix=clash-verge-service-ipc-$tag" >> "$GITHUB_OUTPUT"
+          echo "asset_prefix=clash-verge-next-service-ipc-$tag" >> "$GITHUB_OUTPUT"
           echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
 
       - name: Determine macOS signing mode
@@ -174,7 +174,7 @@ jobs:
           security import cert.p12 -k github-actions.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k github-actions github-actions.keychain
 
-          for bin in clash-verge-service clash-verge-service-install clash-verge-service-uninstall; do
+          for bin in clash-verge-next-service clash-verge-next-service-install clash-verge-next-service-uninstall; do
             file "target/${{ matrix.target }}/release/$bin"
             lipo -info "target/${{ matrix.target }}/release/$bin" || true
             codesign --force \
@@ -195,9 +195,9 @@ jobs:
           $asset = "${{ needs.prepare.outputs.asset_prefix }}-${{ matrix.target }}"
           New-Item -ItemType Directory -Path package -Force | Out-Null
           New-Item -ItemType Directory -Path dist -Force | Out-Null
-          Copy-Item "target/${{ matrix.target }}/release/clash-verge-service.exe" package/
-          Copy-Item "target/${{ matrix.target }}/release/clash-verge-service-install.exe" package/
-          Copy-Item "target/${{ matrix.target }}/release/clash-verge-service-uninstall.exe" package/
+          Copy-Item "target/${{ matrix.target }}/release/clash-verge-next-service.exe" package/
+          Copy-Item "target/${{ matrix.target }}/release/clash-verge-next-service-install.exe" package/
+          Copy-Item "target/${{ matrix.target }}/release/clash-verge-next-service-uninstall.exe" package/
           Copy-Item LICENSE package/
           Compress-Archive -Path package/* -DestinationPath "dist/$asset.zip" -Force
 
@@ -207,9 +207,9 @@ jobs:
         run: |
           asset="${{ needs.prepare.outputs.asset_prefix }}-${{ matrix.target }}"
           mkdir -p package dist
-          cp "target/${{ matrix.target }}/release/clash-verge-service" package/
-          cp "target/${{ matrix.target }}/release/clash-verge-service-install" package/
-          cp "target/${{ matrix.target }}/release/clash-verge-service-uninstall" package/
+          cp "target/${{ matrix.target }}/release/clash-verge-next-service" package/
+          cp "target/${{ matrix.target }}/release/clash-verge-next-service-install" package/
+          cp "target/${{ matrix.target }}/release/clash-verge-next-service-uninstall" package/
           cp LICENSE package/
           tar -czf "dist/$asset.tar.gz" -C package .
 
@@ -245,7 +245,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.prepare.outputs.tag }}
-          name: clash-verge-service-ipc ${{ needs.prepare.outputs.tag }}
+          name: clash-verge-next-service-ipc ${{ needs.prepare.outputs.tag }}
           prerelease: ${{ needs.prepare.outputs.prerelease }}
           generate_release_notes: true
           body: |

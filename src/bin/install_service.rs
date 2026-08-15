@@ -10,8 +10,6 @@ use anyhow::{Context as _, bail};
 use sha2::{Digest as _, Sha256};
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 use shared::run_command;
-#[cfg(all(target_os = "macos", not(feature = "development-channel")))]
-use shared::uninstall_old_service;
 use shared::{enter_repair_gate, run_maintenance_if_requested};
 use std::fs::{File, OpenOptions};
 use std::io::Read as _;
@@ -21,11 +19,15 @@ use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
 fn bundled_service_binary() -> Result<PathBuf, Error> {
-    let source = std::env::current_exe()?.with_file_name(if cfg!(windows) {
-        "clash-verge-service.exe"
+    let binary_name = if cfg!(windows) {
+        format!(
+            "{}.exe",
+            clash_verge_service_ipc::BUNDLED_SERVICE_BINARY_NAME
+        )
     } else {
-        "clash-verge-service"
-    });
+        clash_verge_service_ipc::BUNDLED_SERVICE_BINARY_NAME.to_string()
+    };
+    let source = std::env::current_exe()?.with_file_name(binary_name);
     let metadata = std::fs::symlink_metadata(&source)
         .with_context(|| format!("failed to inspect bundled service binary {source:?}"))?;
     if !metadata.file_type().is_file() {
@@ -296,7 +298,7 @@ fn main() -> Result<(), Error> {
         .map_err(|e| anyhow::anyhow!("Failed to create bundle directories: {}", e))?;
 
     // 复制二进制文件到 bundle 的 MacOS 目录
-    let target_binary_path = macos_path.join("clash-verge-service");
+    let target_binary_path = macos_path.join(clash_verge_service_ipc::SERVICE_SLUG);
     let staged = stage_service_binary(&service_binary_path, &target_binary_path)?;
 
     // 创建并写入 Info.plist
@@ -326,6 +328,7 @@ fn main() -> Result<(), Error> {
         include_str!("../../resources/info.plist.tmpl"),
         display_name = clash_verge_service_ipc::SERVICE_DISPLAY_NAME,
         service_id = clash_verge_service_ipc::MACOS_SERVICE_ID,
+        service_binary_name = clash_verge_service_ipc::SERVICE_SLUG,
     );
     let plist_path = plist_file.to_string_lossy().into_owned();
     let target_path = target_binary_path.to_string_lossy().into_owned();
@@ -364,9 +367,6 @@ fn main() -> Result<(), Error> {
         debug,
     )?;
     wait_for_service_ready()?;
-    #[cfg(not(feature = "development-channel"))]
-    let _ = uninstall_old_service();
-
     Ok(())
 }
 
@@ -379,7 +379,7 @@ fn main() -> Result<(), Error> {
     let debug = std::env::args().any(|arg| arg == "--debug");
     let source = bundled_service_binary()?;
     let install_dir = clash_verge_service_ipc::prepare_service_install_directory()?;
-    let target = install_dir.join("clash-verge-service");
+    let target = install_dir.join(clash_verge_service_ipc::SERVICE_SLUG);
     let staged = stage_service_binary(&source, &target)?;
     let unit_name = format!("{}.service", clash_verge_service_ipc::SERVICE_SLUG);
     let unit_path = PathBuf::from("/etc/systemd/system").join(&unit_name);
@@ -431,7 +431,7 @@ fn main() -> anyhow::Result<()> {
     let _gate = enter_repair_gate()?;
     let source = bundled_service_binary()?;
     let install_dir = clash_verge_service_ipc::prepare_service_install_directory()?;
-    let target = install_dir.join("clash-verge-service.exe");
+    let target = install_dir.join(format!("{}.exe", clash_verge_service_ipc::SERVICE_SLUG));
     let staged = stage_service_binary(&source, &target)?;
 
     let manager_access = ServiceManagerAccess::CONNECT | ServiceManagerAccess::CREATE_SERVICE;
@@ -501,7 +501,7 @@ fn main() -> anyhow::Result<()> {
     let start_access = ServiceAccess::CHANGE_CONFIG | ServiceAccess::START;
     let service = service_manager.create_service(&service_info, start_access)?;
 
-    service.set_description("Clash Verge Service helps to launch Clash Core")?;
+    service.set_description("Clash Verge Next Service helps to launch Clash Core")?;
     configure_windows_service_recovery(&service)?;
     service.start(&Vec::<&OsStr>::new())?;
     wait_for_service_ready()?;

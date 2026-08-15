@@ -49,14 +49,14 @@ jobs:
 
       - name: Install service (Unix)
         if: runner.os != 'Windows'
-        run: sudo target/release/clash-verge-service-install --debug
+        run: sudo target/release/clash-verge-next-service-install --debug
 
       - name: Kill service and verify recovery (Linux)
         if: runner.os == 'Linux'
         run: |
           set -euo pipefail
 
-          service="clash-verge-service.service"
+          service="clash-verge-next-service.service"
 
           # `set -e` used to abort the job the moment the first ping failed, before reaching any of
           # the diagnostics below — so a red run said only "not reachable within 20s" and nothing
@@ -69,7 +69,7 @@ jobs:
             sudo journalctl -u "$service" --no-pager --lines=200 || true
             echo "::endgroup::"
             echo "::group::service runtime directory"
-            sudo ls -la /run/clash-verge-service/ || true
+            sudo ls -la /run/clash-verge-next-service/ || true
             id
             echo "::endgroup::"
           }
@@ -122,7 +122,7 @@ jobs:
             sudo launchctl print "system/$service_id" || true
             echo "::endgroup::"
             echo "::group::service runtime directory"
-            sudo ls -la /var/run/clash-verge-service/ || true
+            sudo ls -la /var/run/clash-verge-next-service/ || true
             id
             echo "::endgroup::"
           }
@@ -170,14 +170,14 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          & "$env:GITHUB_WORKSPACE\target\release\clash-verge-service-install.exe"
+          & "$env:GITHUB_WORKSPACE\target\release\clash-verge-next-service-install.exe"
           Start-Sleep -Seconds 2
 
       - name: Kill service and verify recovery (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $serviceName = "clash_verge_service"
+          $serviceName = "clash_verge_next_service"
           $driver = "$env:GITHUB_WORKSPACE\target\release\service-integration-driver.exe"
 
           function Show-Diagnostics {
@@ -229,15 +229,15 @@ jobs:
       - name: Uninstall service (Unix)
         if: always() && runner.os != 'Windows'
         run: |
-          if [ -x target/release/clash-verge-service-uninstall ]; then
-            sudo target/release/clash-verge-service-uninstall --debug
+          if [ -x target/release/clash-verge-next-service-uninstall ]; then
+            sudo target/release/clash-verge-next-service-uninstall --debug
           fi
 
       - name: Uninstall service (Windows)
         if: always() && runner.os == 'Windows'
         shell: pwsh
         run: |
-          $service = Get-Service -Name "clash_verge_service" -ErrorAction SilentlyContinue
+          $service = Get-Service -Name "clash_verge_next_service" -ErrorAction SilentlyContinue
           if ($null -ne $service) {
-            & "$env:GITHUB_WORKSPACE\target\release\clash-verge-service-uninstall.exe"
+            & "$env:GITHUB_WORKSPACE\target\release\clash-verge-next-service-uninstall.exe"
           }

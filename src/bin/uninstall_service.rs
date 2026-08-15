@@ -8,8 +8,6 @@ mod shared;
 use anyhow::Error;
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 use shared::run_command;
-#[cfg(all(target_os = "macos", not(feature = "development-channel")))]
-use shared::uninstall_old_service;
 use shared::{enter_repair_gate, run_maintenance_if_requested};
 
 #[cfg(any(windows, test))]
@@ -41,8 +39,6 @@ fn main() -> Result<(), Error> {
     let _gate = enter_repair_gate()?;
     let debug = env::args().any(|arg| arg == "--debug");
 
-    #[cfg(not(feature = "development-channel"))]
-    let _ = uninstall_old_service();
     // 定义路径
     let bundle_path = format!(
         "/Library/PrivilegedHelperTools/{}.bundle",
@@ -110,8 +106,8 @@ fn main() -> Result<(), Error> {
 
     // Reload systemd
     let _ = run_command("systemctl", &["daemon-reload"], debug);
-    let target =
-        clash_verge_service_ipc::prepare_service_install_directory()?.join("clash-verge-service");
+    let target = clash_verge_service_ipc::prepare_service_install_directory()?
+        .join(clash_verge_service_ipc::SERVICE_SLUG);
     if target.exists() {
         std::fs::remove_file(&target).map_err(|error| {
             anyhow::anyhow!("Failed to remove service binary {target:?}: {error}")
@@ -190,7 +186,7 @@ fn main() -> anyhow::Result<()> {
         "timed out waiting for service deletion",
     )?;
     let target = clash_verge_service_ipc::prepare_service_install_directory()?
-        .join("clash-verge-service.exe");
+        .join(format!("{}.exe", clash_verge_service_ipc::SERVICE_SLUG));
     if target.exists() {
         std::fs::remove_file(&target).map_err(|error| {
             anyhow::anyhow!("Failed to remove service binary {target:?}: {error}")

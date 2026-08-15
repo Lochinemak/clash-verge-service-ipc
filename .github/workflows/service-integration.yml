@@ -80,11 +80,11 @@ jobs:
 
       - name: Install service (Linux)
         if: runner.os == 'Linux'
-        run: sudo target/release/clash-verge-service-install --debug
+        run: sudo target/release/clash-verge-next-service-install --debug
 
       - name: Verify service (Linux)
         if: runner.os == 'Linux'
-        run: sudo systemctl is-active clash-verge-service.service
+        run: sudo systemctl is-active clash-verge-next-service.service
 
       - name: Start mock_binary (Linux)
         id: start_linux
@@ -112,13 +112,13 @@ jobs:
       - name: Uninstall service (Linux)
         if: ${{ always() && runner.os == 'Linux' }}
         run: |
-          if [ -x target/release/clash-verge-service-uninstall ]; then
-            sudo target/release/clash-verge-service-uninstall --debug
+          if [ -x target/release/clash-verge-next-service-uninstall ]; then
+            sudo target/release/clash-verge-next-service-uninstall --debug
           fi
 
       - name: Install service (macOS)
         if: runner.os == 'macOS'
-        run: sudo target/release/clash-verge-service-install --debug
+        run: sudo target/release/clash-verge-next-service-install --debug
 
       - name: Verify service (macOS)
         if: runner.os == 'macOS'
@@ -150,22 +150,22 @@ jobs:
       - name: Uninstall service (macOS)
         if: ${{ always() && runner.os == 'macOS' }}
         run: |
-          if [ -x target/release/clash-verge-service-uninstall ]; then
-            sudo target/release/clash-verge-service-uninstall --debug
+          if [ -x target/release/clash-verge-next-service-uninstall ]; then
+            sudo target/release/clash-verge-next-service-uninstall --debug
           fi
 
       - name: Install service (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          & "$env:GITHUB_WORKSPACE\\target\\release\\clash-verge-service-install.exe"
+          & "$env:GITHUB_WORKSPACE\\target\\release\\clash-verge-next-service-install.exe"
           Start-Sleep -Seconds 2
 
       - name: Verify service (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $state = sc query clash_verge_service | Select-String "STATE"
+          $state = sc query clash_verge_next_service | Select-String "STATE"
           if ($state -notmatch "RUNNING") { exit 1 }
 
       - name: Start mock_binary (Windows)
@@ -204,9 +204,9 @@ jobs:
         if: ${{ always() && runner.os == 'Windows' }}
         shell: pwsh
         run: |
-          $service = Get-Service -Name "clash_verge_service" -ErrorAction SilentlyContinue
+          $service = Get-Service -Name "clash_verge_next_service" -ErrorAction SilentlyContinue
           if ($null -ne $service) {
-            $uninstaller = "$env:GITHUB_WORKSPACE\\target\\release\\clash-verge-service-uninstall.exe"
+            $uninstaller = "$env:GITHUB_WORKSPACE\\target\\release\\clash-verge-next-service-uninstall.exe"
             if (-not (Test-Path -LiteralPath $uninstaller)) {
               throw "service is installed but the uninstaller was not built"
             }

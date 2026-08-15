@@ -1,10 +1,9 @@
 //! What the installer and the uninstaller both have to do.
 //!
 //! These two binaries are one job seen from either end: they take the same repair gate, run the
-//! same maintenance flag, shell out the same way, and both have to clear the helper that shipped
-//! before the service had a channel. Neither can import the other, and none of this belongs in the
-//! library — it is how a privileged command-line tool behaves, not part of the IPC contract — so
-//! it lives here and both declare it.
+//! same maintenance flag and shell out the same way. Neither can import the other, and none of
+//! this belongs in the library — it is how a privileged command-line tool behaves, not part of
+//! the IPC contract — so it lives here and both declare it.
 
 use anyhow::Error;
 
@@ -25,36 +24,6 @@ pub(crate) fn run_maintenance_if_requested() -> Result<bool, Error> {
     let removed = clash_verge_service_ipc::cleanup_stale_owner_state()?;
     println!("Removed {} stale owner state directories", removed.len());
     Ok(true)
-}
-
-#[cfg(all(target_os = "macos", not(feature = "development-channel")))]
-pub fn uninstall_old_service() -> Result<(), Error> {
-    use std::path::Path;
-
-    let target_binary_path = "/Library/PrivilegedHelperTools/io.github.clashverge.helper";
-    let plist_file = "/Library/LaunchDaemons/io.github.clashverge.helper.plist";
-
-    // Stop and unload service
-    run_command("launchctl", &["stop", "io.github.clashverge.helper"], false)?;
-    run_command("launchctl", &["bootout", "system", plist_file], false)?;
-    run_command(
-        "launchctl",
-        &["disable", "system/io.github.clashverge.helper"],
-        false,
-    )?;
-
-    // Remove files
-    if Path::new(plist_file).exists() {
-        std::fs::remove_file(plist_file)
-            .map_err(|e| anyhow::anyhow!("Failed to remove plist file: {}", e))?;
-    }
-
-    if Path::new(target_binary_path).exists() {
-        std::fs::remove_file(target_binary_path)
-            .map_err(|e| anyhow::anyhow!("Failed to remove service binary: {}", e))?;
-    }
-
-    Ok(())
 }
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]

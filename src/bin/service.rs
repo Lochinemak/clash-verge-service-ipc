@@ -1,4 +1,4 @@
-//! Clash Verge Service - Cross-platform IPC service daemon
+//! Clash Verge Next Service - Cross-platform IPC service daemon
 //!
 //! This service can run as a standalone process or as a Windows service.
 //! It listens for shutdown signals (Ctrl+C, SIGTERM, or service stop) to gracefully terminate.
@@ -180,7 +180,7 @@ fn init_logger() {
 
 async fn run_standalone() -> Result<()> {
     let pid = std::process::id();
-    info!("Clash Verge Service - Standalone Mode");
+    info!("Clash Verge Next Service - Standalone Mode");
     info!("Current process PID: {}", pid);
 
     let Some(_owner_guard) = acquire_service_owner().await? else {
